@@ -29,6 +29,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User selectByUserName(String username) throws Exception {
+        User user= new User();
+        if(redisService.exists(user.getUsername())){
+            user=(User)redisService.get(username);
+        }
         return (User)redisService.get(username);
     }
 }

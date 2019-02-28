@@ -11,14 +11,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import com.server.redis.util.RedisTemplate;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.serializer.*;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName: RedisConfig
