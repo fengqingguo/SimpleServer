@@ -5,18 +5,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.CollectionUtils;
 
-@Component
-public class RedisUtil{
+public class RedisUtil {
 
-    @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public void setRedisTemplate(RedisTemplate redisTemplate) {
+    public void setRedisTemplate(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
     //=============================common============================
@@ -82,8 +78,7 @@ public class RedisUtil{
      * @param key 键
      * @return 值
      */
-    public Object get(String key, int indexdb){
-        redisTemplate.indexdb.set(indexdb);
+    public Object get(String key){
         return key==null?null:redisTemplate.opsForValue().get(key);
     }
 
@@ -93,9 +88,8 @@ public class RedisUtil{
      * @param value 值
      * @return true成功 false失败
      */
-    public boolean set(String key,Object value,int indexdb) {
+    public boolean set(String key,Object value) {
         try {
-            redisTemplate.indexdb.set(indexdb);
             redisTemplate.opsForValue().set(key, value);
             return true;
         } catch (Exception e) {
@@ -117,7 +111,7 @@ public class RedisUtil{
             if(time>0){
                 redisTemplate.opsForValue().set(key, value, time, TimeUnit.SECONDS);
             }else{
-                redisTemplate.opsForValue().set(key, value);
+                set(key, value);
             }
             return true;
         } catch (Exception e) {

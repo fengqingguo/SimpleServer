@@ -1,18 +1,17 @@
-package com.server.system.service;
+package com.server.system.service.impl;
 
 import com.server.redis.service.RedisService;
-import com.server.shiro.utils.PasswordHelper;
 import com.server.system.pojo.User;
+import com.server.system.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private RedisService redisService;
-    @Autowired
-    private PasswordHelper helper;
     @Override
     public int save(User record) throws Exception {
-        helper.encryptPassword(record);
         if(!redisService.exists(record.getUsername())){
             redisService.set(record.getUsername(),record);
         }
@@ -21,18 +20,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int updatePassWord(User record) throws Exception {
-        helper.encryptPassword(record);
         redisService.remove(record.getUsername());
         redisService.set(record.getUsername(),record);
         return 0;
     }
 
     @Override
-    public User selectByUserName(String username) throws Exception {
+    public User selectByUserName() throws Exception {
         User user= new User();
         if(redisService.exists(user.getUsername())){
-            user=(User)redisService.get(username);
+            user=(User)redisService.get(user.getUsername());
+        }else {
+            user.setUsername("administrator");
+            user.setPassword("123456");
         }
-        return (User)redisService.get(username);
+        return user;
     }
 }

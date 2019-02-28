@@ -16,18 +16,6 @@
 	</description>
     
     <dependencies>
-        <!--验证码 -->
-        <dependency>
-            <groupId>com.github.penggle</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>${kaptcha.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>javax.servlet-api</artifactId>
-                    <groupId>javax.servlet</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
         <!--Shiro核心框架 -->
         <dependency>
             <groupId>org.apache.shiro</groupId>
@@ -38,12 +26,6 @@
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring</artifactId>
-            <version>${shiro.version}</version>
-        </dependency>
-        <!-- Shiro使用EhCache缓存框架 -->
-        <dependency>
-            <groupId>org.apache.shiro</groupId>
-            <artifactId>shiro-ehcache</artifactId>
             <version>${shiro.version}</version>
         </dependency>
         <dependency>
@@ -57,32 +39,7 @@
             <artifactId>java-jwt</artifactId>
             <version>3.3.0</version>
         </dependency>
-        <!-- thymeleaf模板引擎和shiro框架的整合 -->
-        <dependency>
-            <groupId>com.github.theborakompanioni</groupId>
-            <artifactId>thymeleaf-extras-shiro</artifactId>
-            <version>${thymeleaf.extras.shiro.version}</version>
-        </dependency>
 
-        <!-- 解析客户端操作系统、浏览器等 -->
-        <dependency>
-            <groupId>eu.bitwalker</groupId>
-            <artifactId>UserAgentUtils</artifactId>
-            <version>${bitwalker.version}</version>
-        </dependency>
-
-        <!-- 通用工具-->
-        <dependency>
-            <groupId>com.server</groupId>
-            <artifactId>common</artifactId>
-            <version>${server.version}</version>
-        </dependency>
-        <!--System-->
-        <dependency>
-            <groupId>com.server</groupId>
-            <artifactId>redis</artifactId>
-            <version>${server.version}</version>
-        </dependency>
         <!--System-->
         <dependency>
             <groupId>com.server</groupId>

@@ -22,16 +22,9 @@
             <artifactId>common</artifactId>
             <version>${server.version}</version>
         </dependency>
-		<!-- redis-->
         <dependency>
             <groupId>com.server</groupId>
             <artifactId>redis</artifactId>
-            <version>${server.version}</version>
-        </dependency>
-		<!-- redis-->
-        <dependency>
-            <groupId>com.server</groupId>
-            <artifactId>shiro</artifactId>
             <version>${server.version}</version>
         </dependency>
     </dependencies>
