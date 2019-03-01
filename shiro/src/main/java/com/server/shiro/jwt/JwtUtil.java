@@ -5,11 +5,11 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.server.common.exception.CustomException;
 import com.server.shiro.utils.Base64ConvertUtil;
-import com.server.shiro.utils.Constant;
-import com.server.shiro.utils.CustomException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -23,31 +23,12 @@ import java.util.Date;
  */
 @Component
 public class JwtUtil {
-
+    @Autowired
+    public  JwtConfig jwtConfig;
     /**
      * LOGGER
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtUtil.class);
-
-    /**
-     * 过期时间改为从配置文件获取
-     */
-    private static String accessTokenExpireTime;
-
-    /**
-     * JWT认证加密私钥(Base64加密)
-     */
-    private static String encryptJWTKey;
-
-    @Value("${accessTokenExpireTime}")
-    public void setAccessTokenExpireTime(String accessTokenExpireTime) {
-        JwtUtil.accessTokenExpireTime = accessTokenExpireTime;
-    }
-
-    @Value("${encryptJWTKey}")
-    public void setEncryptJWTKey(String encryptJWTKey) {
-        JwtUtil.encryptJWTKey = encryptJWTKey;
-    }
 
     /**
      * 校验token是否正确
@@ -56,13 +37,12 @@ public class JwtUtil {
      * @author Wang926454
      * @date 2018/8/31 9:05
      */
-    public static boolean verify(String token) {
+    public boolean verify(String token) {
         try {
             // 帐号加JWT私钥解密
-            String secret = getClaim(token, Constant.ACCOUNT) + Base64ConvertUtil.decode(encryptJWTKey);
+            String secret = getClaim(token, jwtConfig.getAccount()) + Base64ConvertUtil.decode(jwtConfig.getEncryptJWTKey());
             Algorithm algorithm = Algorithm.HMAC256(secret);
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .build();
+            JWTVerifier verifier = JWT.require(algorithm) .build();
             DecodedJWT jwt = verifier.verify(token);
             return true;
         } catch (UnsupportedEncodingException e) {
@@ -97,12 +77,12 @@ public class JwtUtil {
      * @author Wang926454
      * @date 2018/8/31 9:07
      */
-    public static String sign(String account, String currentTimeMillis) {
+    public String sign(String account, String currentTimeMillis) {
         try {
             // 帐号加JWT私钥加密
-            String secret = account + Base64ConvertUtil.decode(encryptJWTKey);
+            String secret = account + Base64ConvertUtil.decode(jwtConfig.getEncryptJWTKey());
             // 此处过期时间是以毫秒为单位，所以乘以1000
-            Date date = new Date(System.currentTimeMillis() + Long.parseLong(accessTokenExpireTime) * 1000);
+            Date date = new Date(System.currentTimeMillis() + jwtConfig.getAccessTokenExpireTime()*1000);
             Algorithm algorithm = Algorithm.HMAC256(secret);
             // 附带account帐号信息
             return JWT.create()
