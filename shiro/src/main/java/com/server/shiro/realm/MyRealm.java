@@ -1,37 +1,42 @@
 package com.server.shiro.realm;
 
 import com.server.redis.service.RedisService;
+import com.server.shiro.jwt.JwtConfig;
 import com.server.shiro.jwt.JwtToken;
 import com.server.shiro.jwt.JwtUtil;
-import com.server.shiro.utils.Constant;
 import com.server.system.pojo.User;
 import com.server.system.service.UserService;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.jsoup.helper.StringUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-/**
- * @author Mr.Li
- * @create 2018-07-12 15:23
- * @desc
- **/
-@Component
+@Service
 public class MyRealm extends AuthorizingRealm {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyRealm.class);
+    @Autowired
+    private JwtConfig jwtConfig;
+
+    private UserService userService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private JwtUtil jwtUtil;
 
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     /**
-     * 必须重写此方法，不然Shiro会报错
+     * 大坑！，必须重写此方法，不然Shiro会报错
      */
     @Override
     public boolean supports(AuthenticationToken token) {
@@ -43,9 +48,12 @@ public class MyRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        /*String username = JwtUtil.getUsername(principals.toString());
-        SysUser user = sysUserService.findByUserName(username);*/
+        /*String username = JWTUtil.getUsername(principals.toString());
+        User user = userService.getUser(username);*/
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
+       /* simpleAuthorizationInfo.addRole(user.getRole());
+        Set<String> permission = new HashSet<>(Arrays.asList(user.getPermission().split(",")));
+        simpleAuthorizationInfo.addStringPermissions(permission);*/
         return simpleAuthorizationInfo;
     }
 
@@ -56,24 +64,27 @@ public class MyRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken auth) throws AuthenticationException {
         String token = (String) auth.getCredentials();
         // 解密获得account，用于和数据库进行对比
-        String account = JwtUtil.getClaim(token, Constant.ACCOUNT);
+        String account = JwtUtil.getClaim(token, jwtConfig.getAccount());
         // 帐号为空
         if (StringUtil.isBlank(account)) {
             throw new AuthenticationException("Token中帐号为空(The account in Token is empty.)");
         }
         // 查询用户是否存在
-        /*UserDto userDto = new UserDto();
-        userDto.setAccount(account);
-        userDto = userMapper.selectOne(userDto);
-        if (userDto == null) {
+        User user = new User();
+        try {
+            user = userService.selectByUserName();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (user == null) {
             throw new AuthenticationException("该帐号不存在(The account does not exist.)");
-        }*/
+        }
         // 开始认证，要AccessToken认证通过，且Redis中存在RefreshToken，且两个Token时间戳一致
-        if (JwtUtil.verify(token) && redisService.exists(Constant.PREFIX_SHIRO_REFRESH_TOKEN + account)) {
+        if (jwtUtil.verify(token) && redisService.exists(jwtConfig.getPrefixShiroRefreshToken()+ account)) {
             // 获取RefreshToken的时间戳
-            String currentTimeMillisRedis = redisService.get(Constant.PREFIX_SHIRO_REFRESH_TOKEN + account).toString();
+            String currentTimeMillisRedis = redisService.get(jwtConfig.getPrefixShiroRefreshToken() + account).toString();
             // 获取AccessToken时间戳，与RefreshToken的时间戳对比
-            if (JwtUtil.getClaim(token, Constant.CURRENT_TIME_MILLIS).equals(currentTimeMillisRedis)) {
+            if (JwtUtil.getClaim(token, jwtConfig.getCurrentTimeMillis()).equals(currentTimeMillisRedis)) {
                 return new SimpleAuthenticationInfo(token, token, "userRealm");
             }
         }
