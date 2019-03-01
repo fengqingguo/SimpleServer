@@ -1,5 +1,7 @@
 package com.server.redis.config;
 
+import com.alibaba.fastjson.parser.ParserConfig;
+import com.server.redis.util.FastJson2JsonRedisSerializer;
 import com.server.redis.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
@@ -10,6 +12,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -114,12 +117,16 @@ public class RedisConfig {
      * @return
      */
     @Bean
-    public RedisTemplate<String, Object> functionDomainRedisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         initDomainRedisTemplate(redisTemplate, redisConnectionFactory);
         return redisTemplate;
     }
-
+    @Bean
+    public RedisSerializer fastJson2JsonRedisSerializer() {
+        ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
+        return new FastJson2JsonRedisSerializer<Object>(Object.class);
+    }
     /**
      * 设置数据存入 redis 的序列化方式,并开启事务
      *
@@ -131,7 +138,7 @@ public class RedisConfig {
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setValueSerializer(fastJson2JsonRedisSerializer());
         // 开启事务
         redisTemplate.setEnableTransactionSupport(true);
         redisTemplate.setConnectionFactory(factory);

@@ -1,4 +1,4 @@
-package com.server.shiro.utils;
+package com.server.common.exception;
 
 /**
  * 自定义异常(CustomException)

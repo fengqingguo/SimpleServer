@@ -2,13 +2,9 @@ package com.server.shiro.jwt;
 
 import org.apache.shiro.authc.AuthenticationToken;
 
-/**
- * @author Mr.Li
- * @create 2018-07-12 15:19
- * @desc
- **/
 public class JwtToken implements AuthenticationToken {
 
+    // 密钥
     private String token;
 
     public JwtToken(String token) {

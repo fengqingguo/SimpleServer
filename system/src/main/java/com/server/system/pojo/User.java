@@ -1,12 +1,17 @@
 package com.server.system.pojo;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable{
+    private static final long serialVersionUID = 668457685664949231L;
 
     private String username;
 
     private String password;
     
     private String salt;
+
+    private String credentialsSalt;
 
     public String getUsername() {
         return "administrator";
@@ -34,5 +39,9 @@ public class User {
 
     public String getCredentialsSalt() {
         return username + salt;
+    }
+
+    public void setCredentialsSalt(String credentialsSalt) {
+        this.credentialsSalt = credentialsSalt;
     }
 }
