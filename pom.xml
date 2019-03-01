@@ -46,6 +46,7 @@
         <module>redis</module>
         <module>shiro</module>
         <module>system</module>
+        <module>rabbit</module>
     </modules>
     <packaging>pom</packaging>
 

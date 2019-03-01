@@ -54,6 +54,16 @@
             <artifactId>shiro</artifactId>
             <version>${server.version}</version>
         </dependency>
+		<!-- 核心模块-->
+        <dependency>
+            <groupId>com.server</groupId>
+            <artifactId>rabbit</artifactId>
+            <version>${server.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
 
     </dependencies>
 

@@ -9,6 +9,7 @@
         <module name="base" />
         <module name="common" />
         <module name="quartz" />
+        <module name="rabbit" />
         <module name="redis" />
         <module name="rediswork" />
         <module name="ruoyi-admin" />
@@ -28,6 +29,7 @@
       <module name="framework (1)" target="1.8" />
       <module name="generator" target="1.8" />
       <module name="quartz" target="1.8" />
+      <module name="rabbit" target="1.8" />
       <module name="redis" target="1.8" />
       <module name="rediswork" target="1.8" />
       <module name="RuoYi" target="1.8" />

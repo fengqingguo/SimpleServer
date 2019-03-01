@@ -1,4 +1,4 @@
-package com.server.web.core.config;
+package com.server.web.config;
 
 import com.server.common.exception.CustomException;
 import com.server.common.exception.CustomUnauthorizedException;

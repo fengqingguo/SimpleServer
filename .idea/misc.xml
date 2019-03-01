@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/views/pom.xml" />
         <option value="$PROJECT_DIR$/rediswork/pom.xml" />
         <option value="$PROJECT_DIR$/shiro/pom.xml" />
+        <option value="$PROJECT_DIR$/rabbit/pom.xml" />
       </list>
     </option>
   </component>
