@@ -3,15 +3,20 @@ package com.server.redis.config;
 import com.alibaba.fastjson.parser.ParserConfig;
 import com.server.redis.util.FastJson2JsonRedisSerializer;
 import com.server.redis.util.RedisUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.redis.cache.RedisCacheConfiguration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
@@ -96,7 +101,7 @@ public class RedisConfig {
      * @date 2018年2月24日
      */
     @Bean
-    public JedisConnectionFactory JedisConnectionFactory(JedisPoolConfig jedisPoolConfig) {
+    public JedisConnectionFactory jedisConnectionFactory(JedisPoolConfig jedisPoolConfig) {
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(jedisPoolConfig);
         //连接池  
         jedisConnectionFactory.setPoolConfig(jedisPoolConfig);
@@ -123,6 +128,21 @@ public class RedisConfig {
         return redisTemplate;
     }
     @Bean
+    public CacheManager cacheManager(@Qualifier("jedisConnectionFactory") RedisConnectionFactory factory) {
+        RedisSerializer<String> redisSerializer = new StringRedisSerializer();
+
+        // 配置序列化
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
+        RedisCacheConfiguration redisCacheConfiguration = config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(fastJson2JsonRedisSerializer()));
+
+        RedisCacheManager cacheManager = RedisCacheManager.builder(factory)
+                .cacheDefaults(redisCacheConfiguration)
+                .build();
+        return cacheManager;
+    }
+
+    @Bean
     public RedisSerializer fastJson2JsonRedisSerializer() {
         ParserConfig.getGlobalInstance().setAutoTypeSupport(true);
         return new FastJson2JsonRedisSerializer<Object>(Object.class);
@@ -137,7 +157,7 @@ public class RedisConfig {
         //如果不配置Serializer，那么存储的时候缺省使用String，如果用User类型存储，那么会提示错误User can't cast to String！  
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        redisTemplate.setHashValueSerializer(fastJson2JsonRedisSerializer());
         redisTemplate.setValueSerializer(fastJson2JsonRedisSerializer());
         // 开启事务
         redisTemplate.setEnableTransactionSupport(true);

@@ -1,5 +1,6 @@
 package com.server.web.config;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.server.common.exception.CustomException;
 import com.server.common.exception.CustomUnauthorizedException;
 import com.server.system.pojo.ResponseBean;

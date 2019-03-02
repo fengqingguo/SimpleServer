@@ -15,6 +15,7 @@ import org.jsoup.helper.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,17 +24,13 @@ public class MyRealm extends AuthorizingRealm {
     private static final Logger LOGGER = LoggerFactory.getLogger(MyRealm.class);
     @Autowired
     private JwtConfig jwtConfig;
-
+    @Autowired
+    @Lazy
     private UserService userService;
     @Autowired
     private RedisService redisService;
     @Autowired
     private JwtUtil jwtUtil;
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
 
     /**
      * 大坑！，必须重写此方法，不然Shiro会报错
@@ -72,7 +69,7 @@ public class MyRealm extends AuthorizingRealm {
         // 查询用户是否存在
         User user = new User();
         try {
-            user = userService.selectByUserName();
+            user = userService.get(account);
         } catch (Exception e) {
             e.printStackTrace();
         }

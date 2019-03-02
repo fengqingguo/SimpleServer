@@ -1,4 +1,4 @@
-package com.server.shiro.utils;
+package com.server.system.util;
 
 import com.server.system.pojo.User;
 import org.apache.shiro.crypto.RandomNumberGenerator;

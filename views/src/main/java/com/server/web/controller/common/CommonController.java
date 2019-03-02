@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.server.framework.config.ServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import com.server.common.base.AjaxResult;
 import com.server.common.config.Global;
 import com.server.common.utils.file.FileUploadUtils;
 import com.server.common.utils.file.FileUtils;
-import com.server.common.config.ServerConfig;
 
 /**
  * 通用请求处理

@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.server.common.exception.CustomException;
 import com.server.shiro.utils.Base64ConvertUtil;
@@ -48,6 +49,9 @@ public class JwtUtil {
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
             throw new CustomException("JWTToken认证解密出现UnsupportedEncodingException异常:" + e.getMessage());
+        }catch (TokenExpiredException e) {
+            LOGGER.error("JWTToken认证解密出现TokenExpiredException异常:" + e.getMessage());
+            throw new CustomException("Token过期(TokenExpired):" + e.getMessage());
         }
     }
 

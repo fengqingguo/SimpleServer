@@ -44,9 +44,10 @@
         <module>common</module>
         <module>quartz</module>
         <module>redis</module>
-        <module>shiro</module>
         <module>system</module>
         <module>rabbit</module>
+        <module>shiro</module>
+        <module>framework</module>
     </modules>
     <packaging>pom</packaging>
 

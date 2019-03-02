@@ -28,18 +28,11 @@ public class WebSocketServer{
     /**
      * 连接建立成功调用的方法*/
     @OnOpen
-    public void onOpen(Session session,@PathParam("token") String token) {
-        System.out.println(token);
+    public void onOpen(Session session/*,@PathParam("token") String token*/) {
         this.session = session;
         webSocketSet.add(this);     //加入set中
         addOnlineCount();           //在线数加1
         System.out.println("有新连接加入！当前在线人数为" + getOnlineCount());
-        try {
-            sendMessage("aaaaa");
-            session.close();
-        } catch (IOException e) {
-            System.out.println("IO异常");
-        }
     }
 
     /**
@@ -59,7 +52,6 @@ public class WebSocketServer{
     @OnMessage
     public void onMessage(String message, Session session) {
         System.out.println("来自客户端的消息:" + message);
-
         //群发消息
         for (WebSocketServer item : webSocketSet) {
             try {

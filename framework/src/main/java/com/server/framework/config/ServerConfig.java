@@ -1,4 +1,4 @@
-package com.server.common.config;
+package com.server.framework.config;
 
 import com.server.common.utils.ServletUtils;
 import org.springframework.stereotype.Component;

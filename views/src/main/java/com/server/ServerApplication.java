@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
  * @author server
  */
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
+@MapperScan("com.server.*.mapper")
 public class ServerApplication
 {
     public static void main(String[] args)

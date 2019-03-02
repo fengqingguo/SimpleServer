@@ -11,6 +11,7 @@
         <option value="$PROJECT_DIR$/rediswork/pom.xml" />
         <option value="$PROJECT_DIR$/shiro/pom.xml" />
         <option value="$PROJECT_DIR$/rabbit/pom.xml" />
+        <option value="$PROJECT_DIR$/framework/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,6 +1,7 @@
 package com.server.shiro.config;
 import com.server.shiro.jwt.JwtFilter;
 import com.server.shiro.realm.MyRealm;
+import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.mgt.DefaultSessionStorageEvaluator;
 import org.apache.shiro.mgt.DefaultSubjectDAO;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
@@ -23,8 +24,8 @@ public class ShiroConfig {
     public DefaultWebSecurityManager getManager(MyRealm realm) {
         DefaultWebSecurityManager manager = new DefaultWebSecurityManager();
         // 使用自己的realm
+        //realm.setCredentialsMatcher(hashedCredentialsMatcher());
         manager.setRealm(realm);
-
         /*
          * 关闭shiro自带的session，详情见文档
          * http://shiro.apache.org/session-management.html#SessionManagement-StatelessApplications%28Sessionless%29
@@ -60,10 +61,18 @@ public class ShiroConfig {
         // 访问401和404页面不通过我们的Filter
         filterRuleMap.put("/401", "anon");
         filterRuleMap.put("/websocket", "anon");
+        filterRuleMap.put("/tool/swagger", "anon");
+        filterRuleMap.put("/webjars/**", "anon");
         factoryBean.setFilterChainDefinitionMap(filterRuleMap);
         return factoryBean;
     }
-
+    @Bean
+    public HashedCredentialsMatcher hashedCredentialsMatcher() {
+        HashedCredentialsMatcher hashedCredentialsMatcher =new HashedCredentialsMatcher();
+        hashedCredentialsMatcher.setHashAlgorithmName("md5");// 散列算法:这里使用MD5算法;
+        hashedCredentialsMatcher.setHashIterations(2);// 散列的次数，比如散列两次，相当于 //
+        return hashedCredentialsMatcher;
+    }
     /**
      * 下面的代码是添加注解支持
      */

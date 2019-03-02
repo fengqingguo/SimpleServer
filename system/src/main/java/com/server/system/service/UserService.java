@@ -1,12 +1,22 @@
 package com.server.system.service;
 
 import com.server.system.pojo.User;
-import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 public interface UserService {
-    int save(User record) throws Exception;
+	int deleteByPrimaryKey(String id);
 
-    int updatePassWord(User record)throws Exception;
+    int insertSelective(User record);
 
-    User selectByUserName()throws Exception;
+    User selectByPrimaryKey(String id);
+
+    int updateByPrimaryKeySelective(User record);
+    
+    Integer pageCount(Map<String, Object> map);
+    
+    List<User> findByPage(Map<String, Object> map);
+
+	User get(String username);
 }

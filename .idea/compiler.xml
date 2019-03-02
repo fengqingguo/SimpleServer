@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="base" />
         <module name="common" />
+        <module name="framework" />
         <module name="quartz" />
         <module name="rabbit" />
         <module name="redis" />
